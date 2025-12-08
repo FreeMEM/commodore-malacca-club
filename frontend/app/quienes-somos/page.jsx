@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import { getPageBySlug } from '@/lib/wordpress'
+import { getPageBySlug, sanitizeHtml, fixContentUrls } from '@/lib/wordpress'
 import SectionTitle from '@/components/ui/SectionTitle'
 
 export const metadata = {
@@ -35,7 +35,7 @@ export default async function QuienesSomosPage() {
                 '& li': { mb: 0.5 },
                 '& img': { maxWidth: '100%', borderRadius: 2, my: 2 },
               }}
-              dangerouslySetInnerHTML={{ __html: page.content.rendered }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(fixContentUrls(page.content.rendered)) }}
             />
           ) : (
             <>

@@ -69,8 +69,8 @@ export default function Header() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: 'text.secondary',
-                    fontWeight: 500,
+                    color: '#e2021b',
+                    fontWeight: 700,
                     letterSpacing: '0.05em',
                   }}
                 >

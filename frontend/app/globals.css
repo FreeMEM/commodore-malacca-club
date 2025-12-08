@@ -27,9 +27,10 @@ a:hover {
   text-decoration: none;
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling y evitar salto por scrollbar */
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 /* Selection color with brand color */

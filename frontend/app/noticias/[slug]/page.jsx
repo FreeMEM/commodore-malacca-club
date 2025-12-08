@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate, removeFirstImage, fixContentUrls } from '@/lib/wordpress'
+import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate, removeFirstImage, fixContentUrls, sanitizeHtml } from '@/lib/wordpress'
 
 export const revalidate = 60
 
@@ -45,7 +45,7 @@ export default async function NoticiaDetallePage({ params }) {
   const rawContent = imageUrl
     ? removeFirstImage(noticia.content.rendered)
     : noticia.content.rendered
-  const content = fixContentUrls(rawContent)
+  const content = sanitizeHtml(fixContentUrls(rawContent))
 
   return (
     <Box sx={{ py: { xs: 4, md: 6 } }}>

@@ -231,7 +231,7 @@ class MCClub_REST_API {
                 'id'                  => $post->ID,
                 'title'               => $post->post_title,
                 'slug'                => $post->post_name,
-                'excerpt'             => get_the_excerpt($post),
+                'excerpt'             => html_entity_decode(wp_strip_all_tags(get_the_excerpt($post))),
                 'fecha_evento'        => get_post_meta($post->ID, 'fecha_evento', true),
                 'hora_inicio'         => get_post_meta($post->ID, 'hora_inicio', true),
                 'hora_fin'            => get_post_meta($post->ID, 'hora_fin', true),

@@ -3,8 +3,22 @@
  * Se ejecuta en el servidor (SSR/SSG)
  */
 
+import DOMPurify from 'isomorphic-dompurify'
+
 const API_URL = process.env.WORDPRESS_API_URL || 'http://localhost:8080/wp-json'
 const WP_HOST = process.env.WORDPRESS_HOST || 'localhost:8080'
+
+/**
+ * Sanitizar HTML para prevenir XSS
+ */
+export function sanitizeHtml(html) {
+  if (!html) return ''
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'figure', 'figcaption', 'span', 'div'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height'],
+    ALLOW_DATA_ATTR: false,
+  })
+}
 
 /**
  * Reemplazar localhost en URLs para acceso desde otros dispositivos
@@ -177,6 +191,21 @@ export function fixContentUrls(html) {
 export function stripHtml(html) {
   if (!html) return ''
   return html.replace(/<[^>]*>/g, '')
+}
+
+/**
+ * Decodificar entidades HTML
+ */
+export function decodeHtmlEntities(text) {
+  if (!text) return ''
+  return text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
 }
 
 /**

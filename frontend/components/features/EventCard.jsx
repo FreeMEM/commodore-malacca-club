@@ -13,7 +13,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import GroupIcon from '@mui/icons-material/Group'
-import { formatDate } from '@/lib/wordpress'
+import { formatDate, decodeHtmlEntities } from '@/lib/wordpress'
 import InscripcionForm from './InscripcionForm'
 
 export default function EventCard({ evento }) {
@@ -159,7 +159,7 @@ export default function EventCard({ evento }) {
               mb: 2,
             }}
           >
-            {excerpt}
+            {decodeHtmlEntities(excerpt)}
           </Typography>
         )}
 

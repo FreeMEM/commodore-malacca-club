@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -46,9 +47,10 @@ export default function HeroSlider() {
           height: '100%',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Box sx={{ maxWidth: 700, color: 'white' }}>
+        <Box sx={{ maxWidth: { xs: '100%', md: 600 }, color: 'white' }}>
           <Typography
             variant="h1"
             sx={{
@@ -134,6 +136,39 @@ export default function HeroSlider() {
               Conocenos
             </Button>
           </Stack>
+        </Box>
+
+        {/* Logo en el lado derecho */}
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: '1 1 auto',
+            ml: { md: 4, lg: 6 },
+          }}
+        >
+          <Box
+            sx={{
+              position: 'relative',
+              width: { md: 400, lg: 480 },
+              height: { md: 400, lg: 480 },
+              filter: 'drop-shadow(0 0 40px rgba(255,255,255,0.35))',
+              animation: 'float 6s ease-in-out infinite',
+              '@keyframes float': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-15px)' },
+              },
+            }}
+          >
+            <Image
+              src="/logo-transparent-borde.png"
+              alt="Commodore Malacca Club Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+            />
+          </Box>
         </Box>
       </Container>
 
