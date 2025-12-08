@@ -1,14 +1,14 @@
-# CLAUDE.md - Guía para desarrollo con IA
+# CLAUDE.md - Guia para desarrollo
 
-Este archivo define las convenciones y mejores prácticas para este proyecto.
+Este archivo define las convenciones y mejores practicas para este proyecto.
 
 ## Reglas de Git
 
 ### Commits
 - **NO incluir** menciones a Claude, Anthropic, IA o asistentes en mensajes de commit
 - **NO usar** co-authored-by ni referencias a herramientas de IA
-- Mensajes en español, formato: `tipo: descripción breve`
-- Tipos válidos: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- Mensajes en español, formato: `tipo: descripcion breve`
+- Tipos validos: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 Ejemplo correcto:
 ```
@@ -24,29 +24,32 @@ feat: agregar endpoint (generado con Claude)
 
 ```
 cbm-malacca-club/
-├── docker-compose.yml      # Orquestación de servicios
-├── nginx/                  # Configuración Nginx + SSL
+├── docker-compose.yml      # Orquestacion de servicios
+├── nginx/                  # Configuracion Nginx + SSL
 ├── wordpress/              # WordPress headless
-│   ├── themes/
 │   └── plugins/
-├── frontend/               # App React (Vite)
-│   └── src/
-│       ├── components/     # Componentes reutilizables
-│       ├── pages/          # Páginas/vistas
-│       ├── services/       # Llamadas API
-│       ├── hooks/          # Custom hooks
-│       └── assets/         # Imágenes, estilos
-└── docs/                   # Documentación técnica
+│       └── mcclub-core/    # Plugin con CPTs y REST API
+├── frontend/               # App Next.js 14
+│   ├── app/                # App Router (paginas)
+│   ├── components/         # Componentes React
+│   │   ├── features/       # EventCard, NewsCard, Sliders
+│   │   ├── layout/         # Header, Footer
+│   │   ├── three/          # Componentes Three.js
+│   │   └── ui/             # Componentes UI
+│   ├── lib/                # Utilidades y configuracion
+│   └── public/             # Assets estaticos
+└── docs/                   # Documentacion tecnica
 ```
 
-## Convenciones de Código
+## Convenciones de Codigo
 
-### Frontend (React)
+### Frontend (Next.js)
 - Componentes funcionales con hooks
 - Nombres en PascalCase para componentes: `EventCard.jsx`
-- Nombres en camelCase para hooks: `useEvents.js`
-- CSS Modules o Tailwind (a decidir)
-- Fetch con custom hooks, no en componentes directamente
+- App Router de Next.js 14 (carpeta `app/`)
+- Server Components por defecto, `'use client'` solo cuando sea necesario
+- Material UI (MUI) para estilos y componentes
+- Fetching de datos en Server Components con funciones async
 
 ### WordPress
 - Custom Post Types en plugin dedicado (no en tema)
@@ -55,16 +58,16 @@ cbm-malacca-club/
 
 ## Endpoints API WordPress
 
-| Recurso | Endpoint | Método |
+| Recurso | Endpoint | Metodo |
 |---------|----------|--------|
 | Noticias | `/wp-json/wp/v2/posts` | GET |
-| Páginas | `/wp-json/wp/v2/pages` | GET |
+| Paginas | `/wp-json/wp/v2/pages` | GET |
 | Eventos | `/wp-json/wp/v2/eventos` | GET |
 | Inscripciones | `/wp-json/mcclub/v1/inscripciones` | POST |
 
 ## Variables de Entorno
 
-### Desarrollo
+### WordPress (Docker)
 ```env
 WORDPRESS_DB_HOST=db
 WORDPRESS_DB_NAME=wordpress
@@ -73,25 +76,36 @@ WORDPRESS_DB_PASSWORD=<segura>
 MYSQL_ROOT_PASSWORD=<segura>
 ```
 
-### Frontend
+### Frontend (Next.js)
 ```env
-VITE_API_URL=http://localhost:8080/wp-json
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8080
 ```
 
-## Docker
+## Comandos
 
+### Docker
 - Desarrollo: `docker compose up -d`
 - Logs: `docker compose logs -f [servicio]`
 - Rebuild: `docker compose build --no-cache`
 
-## Tareas Pendientes por Implementar
+### Frontend
+- Desarrollo: `npm run dev`
+- Build: `npm run build`
+- Produccion: `npm start`
 
-- [ ] Configurar docker-compose.yml
-- [ ] Crear tema starter WordPress
-- [ ] Plugin para Custom Post Type "Eventos"
-- [ ] Setup inicial React con Vite
-- [ ] Componentes: Header, Footer, EventCard, NewsCard
-- [ ] Páginas: Home, QuienesSomos, Calendario, Noticias
+## Tareas Completadas
+
+- [x] Configurar docker-compose.yml
+- [x] Plugin para Custom Post Type "Eventos"
+- [x] Setup inicial Next.js 14
+- [x] Componentes: Header, Footer, EventCard, NewsCard
+- [x] Paginas: Home, QuienesSomos, Calendario, Noticias
+- [x] Hero con fondo 3D wireframe (Three.js)
+- [x] Sliders de noticias y eventos (Swiper)
+- [x] Integracion con WordPress REST API
+
+## Tareas Pendientes
+
 - [ ] Sistema de inscripciones a eventos
-- [ ] Integración redes sociales (enlaces)
-- [ ] Configuración SSL con Certbot
+- [ ] Configuracion SSL con Certbot
+- [ ] Despliegue en produccion

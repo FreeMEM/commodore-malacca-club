@@ -1,407 +1,317 @@
-# Frontend React
+# Frontend Next.js
 
-## Stack Tecnológico
+## Stack Tecnologico
 
-| Herramienta | Propósito |
+| Herramienta | Proposito |
 |-------------|-----------|
-| Vite | Build tool y dev server |
-| React 18 | UI library |
-| React Router | Navegación SPA |
-| TanStack Query | Fetching y cache de datos |
-| CSS Modules | Estilos (o Tailwind) |
+| Next.js 14 | Framework React con SSR/SSG |
+| React 19 | UI library |
+| MUI (Material UI) | Componentes y estilos |
+| Swiper | Carruseles/sliders |
+| Three.js | Graficos 3D |
 
 ## Estructura de Carpetas
 
 ```
 frontend/
+├── app/                      # App Router (Next.js 14)
+│   ├── layout.jsx            # Layout principal
+│   ├── page.jsx              # Pagina inicio (/)
+│   ├── globals.css           # Estilos globales
+│   ├── not-found.jsx         # Pagina 404
+│   ├── calendario/
+│   │   └── page.jsx          # /calendario
+│   ├── noticias/
+│   │   ├── page.jsx          # /noticias
+│   │   └── [slug]/
+│   │       └── page.jsx      # /noticias/:slug
+│   └── quienes-somos/
+│       └── page.jsx          # /quienes-somos
+├── components/
+│   ├── features/             # Componentes de funcionalidad
+│   │   ├── EventCard.jsx
+│   │   ├── EventList.jsx
+│   │   ├── EventSlider.jsx
+│   │   ├── NewsCard.jsx
+│   │   ├── NewsList.jsx
+│   │   ├── NewsSlider.jsx
+│   │   ├── HeroSlider.jsx
+│   │   └── InscripcionForm.jsx
+│   ├── layout/               # Componentes de estructura
+│   │   ├── Header.jsx
+│   │   └── Footer.jsx
+│   ├── three/                # Componentes Three.js
+│   │   ├── DynamicBackground.jsx
+│   │   └── WireframeBackground.jsx
+│   └── ui/                   # Componentes UI reutilizables
+│       └── SectionTitle.jsx
+├── lib/
+│   ├── wordpress.js          # Cliente API WordPress
+│   ├── theme.js              # Configuracion tema MUI
+│   └── ThemeRegistry.jsx     # Provider de MUI
 ├── public/
-│   └── favicon.ico
-├── src/
-│   ├── assets/
-│   │   ├── images/
-│   │   └── styles/
-│   │       └── global.css
-│   ├── components/
-│   │   ├── layout/
-│   │   │   ├── Header.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   └── Layout.jsx
-│   │   ├── common/
-│   │   │   ├── Button.jsx
-│   │   │   ├── Card.jsx
-│   │   │   └── Loading.jsx
-│   │   └── features/
-│   │       ├── EventCard.jsx
-│   │       ├── EventList.jsx
-│   │       ├── NewsCard.jsx
-│   │       ├── NewsList.jsx
-│   │       └── SocialLinks.jsx
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── QuienesSomos.jsx
-│   │   ├── Calendario.jsx
-│   │   ├── Noticias.jsx
-│   │   ├── NoticiaDetalle.jsx
-│   │   └── NotFound.jsx
-│   ├── services/
-│   │   ├── api.js           # Cliente base
-│   │   ├── posts.js         # Noticias
-│   │   ├── pages.js         # Páginas estáticas
-│   │   └── eventos.js       # Calendario
-│   ├── hooks/
-│   │   ├── useNoticias.js
-│   │   ├── useEventos.js
-│   │   └── usePage.js
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── router.jsx
-├── .env.example
-├── package.json
-├── vite.config.js
-└── index.html
+│   ├── logo.png
+│   └── models/
+│       └── commodore64.obj   # Modelo 3D
+├── jsconfig.json
+├── next.config.js
+└── package.json
 ```
 
-## Configuración Inicial
+## Configuracion
 
-### package.json
-```json
-{
-  "name": "mcclub-frontend",
-  "private": true,
-  "version": "0.0.1",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint src --ext js,jsx"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "@tanstack/react-query": "^5.8.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.0",
-    "vite": "^5.0.0",
-    "eslint": "^8.54.0",
-    "eslint-plugin-react": "^7.33.0",
-    "eslint-plugin-react-hooks": "^4.6.0"
-  }
-}
-```
-
-### vite.config.js
+### next.config.js
 ```javascript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.freemem.space',
+      },
+    ],
+  },
+}
 
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    proxy: {
-      '/wp-json': {
-        target: 'http://localhost:8080',
-        changeOrigin: true
-      }
-    }
-  }
-})
+module.exports = nextConfig
 ```
 
 ### Variables de Entorno
 ```env
-# .env.development
-VITE_API_URL=http://localhost:8080/wp-json
-
-# .env.production
-VITE_API_URL=https://cbmmalacca.freemem.space/wp-json
+# .env.local
+NEXT_PUBLIC_WORDPRESS_URL=http://localhost:8080
 ```
 
 ## Componentes Principales
 
-### Layout
-Estructura base de todas las páginas.
+### Layout (app/layout.jsx)
+Layout raiz con Header, Footer y ThemeRegistry de MUI.
 
 ```jsx
-// src/components/layout/Layout.jsx
-import Header from './Header'
-import Footer from './Footer'
+import ThemeRegistry from '@/lib/ThemeRegistry'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
 
-export default function Layout({ children }) {
+export default function RootLayout({ children }) {
   return (
-    <div className="layout">
-      <Header />
-      <main>{children}</main>
-      <Footer />
-    </div>
+    <html lang="es">
+      <body>
+        <ThemeRegistry>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ThemeRegistry>
+      </body>
+    </html>
   )
 }
 ```
 
-### Header
-Navegación principal con enlaces a secciones.
+### Hero con 3D (components/features/HeroSlider.jsx)
+Hero section con fondo 3D wireframe de Three.js.
 
 ```jsx
-// src/components/layout/Header.jsx
-import { Link, NavLink } from 'react-router-dom'
+'use client'
 
-export default function Header() {
+import DynamicBackground from '@/components/three/DynamicBackground'
+
+export default function HeroSlider() {
   return (
-    <header>
-      <Link to="/" className="logo">
-        CBM Malacca Club
-      </Link>
-      <nav>
-        <NavLink to="/quienes-somos">Quiénes Somos</NavLink>
-        <NavLink to="/calendario">Calendario</NavLink>
-        <NavLink to="/noticias">Noticias</NavLink>
-      </nav>
-    </header>
+    <Box sx={{ position: 'relative', height: '85vh' }}>
+      <DynamicBackground />
+      {/* Contenido del hero */}
+    </Box>
   )
 }
 ```
 
-### EventCard
-Tarjeta para mostrar un evento del calendario.
+### Sliders (Swiper)
+Carruseles para noticias y eventos usando Swiper.
 
 ```jsx
-// src/components/features/EventCard.jsx
-export default function EventCard({ evento }) {
-  const { title, date, excerpt, plazas, inscritos } = evento
+'use client'
 
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination } from 'swiper/modules'
+
+export default function NewsSlider({ noticias }) {
   return (
-    <article className="event-card">
-      <time>{formatDate(date)}</time>
-      <h3>{title}</h3>
-      <p>{excerpt}</p>
-      <div className="event-meta">
-        <span>Plazas: {inscritos}/{plazas}</span>
-        {plazas > inscritos && (
-          <button>Inscribirse</button>
-        )}
-      </div>
-    </article>
+    <Swiper
+      modules={[Navigation, Pagination]}
+      slidesPerView={3}
+      navigation
+      pagination={{ clickable: true }}
+    >
+      {noticias.map((noticia) => (
+        <SwiperSlide key={noticia.id}>
+          <NewsCard noticia={noticia} />
+        </SwiperSlide>
+      ))}
+    </Swiper>
   )
 }
 ```
 
-## Servicios API
+## Cliente API WordPress (lib/wordpress.js)
 
-### Cliente Base
 ```javascript
-// src/services/api.js
-const API_URL = import.meta.env.VITE_API_URL
+const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL
 
-export async function fetchAPI(endpoint, options = {}) {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
+export async function getNoticias(limit = 10) {
+  const res = await fetch(
+    `${WORDPRESS_URL}/wp-json/wp/v2/posts?per_page=${limit}&_embed`,
+    { next: { revalidate: 60 } }
+  )
+  return res.json()
+}
+
+export async function getEventos(limit = 10) {
+  const res = await fetch(
+    `${WORDPRESS_URL}/wp-json/wp/v2/eventos?per_page=${limit}&_embed`,
+    { next: { revalidate: 60 } }
+  )
+  return res.json()
+}
+
+export async function getPage(slug) {
+  const res = await fetch(
+    `${WORDPRESS_URL}/wp-json/wp/v2/pages?slug=${slug}&_embed`,
+    { next: { revalidate: 60 } }
+  )
+  const pages = await res.json()
+  return pages[0]
+}
+```
+
+## Tema MUI (lib/theme.js)
+
+Colores del club Commodore Malacca:
+
+```javascript
+import { createTheme } from '@mui/material/styles'
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0D5BA8',      // Azul del logo
+      dark: '#063A6E',
     },
-    ...options
-  })
+    secondary: {
+      main: '#E31E24',      // Rojo del logo
+    },
+  },
+  typography: {
+    fontFamily: 'var(--font-raleway), sans-serif',
+  },
+})
 
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.status}`)
-  }
-
-  return response.json()
-}
+export default theme
 ```
 
-### Servicio de Noticias
-```javascript
-// src/services/posts.js
-import { fetchAPI } from './api'
+## Three.js - Fondo 3D
 
-export function getNoticias(params = {}) {
-  const query = new URLSearchParams({
-    per_page: 10,
-    _embed: true,
-    ...params
-  })
-  return fetchAPI(`/wp/v2/posts?${query}`)
-}
-
-export function getNoticia(slug) {
-  return fetchAPI(`/wp/v2/posts?slug=${slug}&_embed=true`)
-    .then(posts => posts[0])
-}
-```
-
-### Servicio de Eventos
-```javascript
-// src/services/eventos.js
-import { fetchAPI } from './api'
-
-export function getEventos(params = {}) {
-  const query = new URLSearchParams({
-    per_page: 20,
-    orderby: 'meta_value',
-    meta_key: 'fecha_evento',
-    order: 'asc',
-    ...params
-  })
-  return fetchAPI(`/wp/v2/eventos?${query}`)
-}
-
-export function inscribirse(eventoId, datos) {
-  return fetchAPI('/mcclub/v1/inscripciones', {
-    method: 'POST',
-    body: JSON.stringify({
-      evento_id: eventoId,
-      ...datos
-    })
-  })
-}
-```
-
-## Custom Hooks
-
-### useNoticias
-```javascript
-// src/hooks/useNoticias.js
-import { useQuery } from '@tanstack/react-query'
-import { getNoticias, getNoticia } from '../services/posts'
-
-export function useNoticias(params) {
-  return useQuery({
-    queryKey: ['noticias', params],
-    queryFn: () => getNoticias(params)
-  })
-}
-
-export function useNoticia(slug) {
-  return useQuery({
-    queryKey: ['noticia', slug],
-    queryFn: () => getNoticia(slug),
-    enabled: !!slug
-  })
-}
-```
-
-### useEventos
-```javascript
-// src/hooks/useEventos.js
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getEventos, inscribirse } from '../services/eventos'
-
-export function useEventos(params) {
-  return useQuery({
-    queryKey: ['eventos', params],
-    queryFn: () => getEventos(params)
-  })
-}
-
-export function useInscripcion() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ eventoId, datos }) => inscribirse(eventoId, datos),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['eventos'] })
-    }
-  })
-}
-```
-
-## Routing
+### DynamicBackground.jsx
+Wrapper con carga dinamica (sin SSR).
 
 ```jsx
-// src/router.jsx
-import { createBrowserRouter } from 'react-router-dom'
-import Layout from './components/layout/Layout'
-import Home from './pages/Home'
-import QuienesSomos from './pages/QuienesSomos'
-import Calendario from './pages/Calendario'
-import Noticias from './pages/Noticias'
-import NoticiaDetalle from './pages/NoticiaDetalle'
-import NotFound from './pages/NotFound'
+'use client'
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: 'quienes-somos', element: <QuienesSomos /> },
-      { path: 'calendario', element: <Calendario /> },
-      { path: 'noticias', element: <Noticias /> },
-      { path: 'noticias/:slug', element: <NoticiaDetalle /> },
-      { path: '*', element: <NotFound /> }
-    ]
-  }
-])
-```
+import dynamic from 'next/dynamic'
 
-## Páginas
+const WireframeBackground = dynamic(
+  () => import('./WireframeBackground'),
+  { ssr: false }
+)
 
-### Home
-```jsx
-// src/pages/Home.jsx
-import { useNoticias } from '../hooks/useNoticias'
-import { useEventos } from '../hooks/useEventos'
-import NewsList from '../components/features/NewsList'
-import EventList from '../components/features/EventList'
-
-export default function Home() {
-  const { data: noticias, isLoading: loadingNews } = useNoticias({ per_page: 3 })
-  const { data: eventos, isLoading: loadingEvents } = useEventos({ per_page: 3 })
-
-  return (
-    <div className="home">
-      <section className="hero">
-        <h1>CBM Malacca Club</h1>
-        <p>Bienvenidos a nuestro club</p>
-      </section>
-
-      <section className="upcoming-events">
-        <h2>Próximos Eventos</h2>
-        {loadingEvents ? <Loading /> : <EventList eventos={eventos} />}
-      </section>
-
-      <section className="latest-news">
-        <h2>Últimas Noticias</h2>
-        {loadingNews ? <Loading /> : <NewsList noticias={noticias} />}
-      </section>
-    </div>
-  )
+export default function DynamicBackground() {
+  return <WireframeBackground />
 }
 ```
 
-## Manejo de Imágenes
+### WireframeBackground.jsx
+Renderiza modelo OBJ en wireframe con Three.js vanilla.
 
-WordPress devuelve imágenes en `_embedded['wp:featuredmedia']`:
+- Carga modelo desde `/models/commodore64.obj`
+- Material wireframe gris semitransparente
+- Rotacion y movimiento suave animado
+- Responsive al tamaño del contenedor
 
-```javascript
-function getImageUrl(post, size = 'medium') {
-  const media = post._embedded?.['wp:featuredmedia']?.[0]
-  if (!media) return '/placeholder.jpg'
+## Paginas
 
-  return media.media_details?.sizes?.[size]?.source_url
-    || media.source_url
-}
-```
-
-## SEO y Meta Tags
-
-Para SEO básico usar `react-helmet-async`:
-
+### Home (app/page.jsx)
 ```jsx
-import { Helmet } from 'react-helmet-async'
+import { getNoticias, getEventos } from '@/lib/wordpress'
+import HeroSlider from '@/components/features/HeroSlider'
+import NewsSlider from '@/components/features/NewsSlider'
+import EventSlider from '@/components/features/EventSlider'
 
-export default function NoticiaDetalle({ noticia }) {
+export const revalidate = 60
+
+export default async function HomePage() {
+  const [noticias, eventos] = await Promise.all([
+    getNoticias(6),
+    getEventos(6),
+  ])
+
   return (
     <>
-      <Helmet>
-        <title>{noticia.title.rendered} | CBM Malacca</title>
-        <meta name="description" content={noticia.excerpt.rendered} />
-      </Helmet>
-      {/* contenido */}
+      <HeroSlider />
+      <EventSlider eventos={eventos} />
+      <NewsSlider noticias={noticias} />
     </>
   )
+}
+```
+
+### Noticias (app/noticias/page.jsx)
+```jsx
+import { getNoticias } from '@/lib/wordpress'
+import NewsList from '@/components/features/NewsList'
+
+export default async function NoticiasPage() {
+  const noticias = await getNoticias(20)
+
+  return (
+    <Container>
+      <NewsList noticias={noticias} />
+    </Container>
+  )
+}
+```
+
+## Comandos
+
+```bash
+# Desarrollo
+npm run dev
+
+# Build produccion
+npm run build
+
+# Ejecutar build
+npm start
+
+# Linting
+npm run lint
+```
+
+## Dependencias Principales
+
+```json
+{
+  "dependencies": {
+    "next": "14.2.x",
+    "react": "^19.0.0",
+    "@mui/material": "^6.x",
+    "@emotion/react": "^11.x",
+    "@emotion/styled": "^11.x",
+    "swiper": "^11.x",
+    "three": "^0.170.x"
+  }
 }
 ```

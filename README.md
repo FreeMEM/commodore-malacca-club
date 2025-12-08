@@ -1,18 +1,18 @@
 # CBM Malacca Club
 
-Sistema web para el club Malacca usando WordPress como CMS headless y React como frontend.
+Sistema web para el club Malacca usando WordPress como CMS headless y Next.js como frontend.
 
 **Dominio:** `cbmmalacca.freemem.space` (provisional)
 
 ## Arquitectura
 
 ```
-                              PRODUCCIÓN
+                              PRODUCCION
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │   Internet ──► Nginx (:443) ──┬── /wp-admin, /wp-json ─► WP    │
 │                    │          │                          │      │
-│               Certbot         └── /* ─► React (estático) │      │
+│               Certbot         └── /* ─► Next.js (SSR)    │      │
 │            (Let's Encrypt)                               ▼      │
 │                                                       MariaDB   │
 └─────────────────────────────────────────────────────────────────┘
@@ -22,7 +22,7 @@ Sistema web para el club Malacca usando WordPress como CMS headless y React como
 │                                                                 │
 │   localhost ──► Nginx (:80) ──┬── /wp-admin, /wp-json ─► WP    │
 │                               │                          │      │
-│                               └── /* ─► Vite (:5173)     │      │
+│                               └── /* ─► Next.js (:3000)  │      │
 │                                                          ▼      │
 │                                                       MariaDB   │
 └─────────────────────────────────────────────────────────────────┘
@@ -30,110 +30,114 @@ Sistema web para el club Malacca usando WordPress como CMS headless y React como
 
 ### Componentes
 
-| Componente | Tecnología | Puerto | Descripción |
+| Componente | Tecnologia | Puerto | Descripcion |
 |------------|------------|--------|-------------|
-| Proxy/SSL | Nginx + Certbot | 80/443 | Enrutamiento, SSL, caché |
-| CMS | WordPress + PHP-FPM | 9000 | Gestión de contenido |
+| Proxy/SSL | Nginx + Certbot | 80/443 | Enrutamiento, SSL, cache |
+| CMS | WordPress + PHP-FPM | 9000 | Gestion de contenido |
 | Base de datos | MariaDB | 3306 | Almacenamiento |
-| Frontend | React + Vite | 5173 (dev) | Interfaz de usuario |
+| Frontend | Next.js 14 | 3000 | Interfaz de usuario (SSR/SSG) |
 | SSL | Certbot | - | Certificados Let's Encrypt |
 
 ## Estructura del Proyecto
 
 ```
 cbm-malacca-club/
-├── docker-compose.yml        # Orquestación base
-├── docker-compose.dev.yml    # Overrides desarrollo (sin SSL)
-├── docker-compose.prod.yml   # Overrides producción (con SSL)
+├── docker-compose.yml        # Orquestacion base
+├── docker-compose.override.yml # Overrides desarrollo
+├── docker-compose.prod.yml   # Overrides produccion (con SSL)
 ├── .env.example              # Variables de entorno (plantilla)
 ├── README.md
 │
-├── docs/                     # Documentación detallada
-│   ├── arquitectura.md
-│   ├── desarrollo.md
-│   ├── despliegue.md
-│   └── api.md
+├── docs/                     # Documentacion detallada
+│   ├── docker-compose.md
+│   ├── frontend.md
+│   └── wordpress-cpt.md
 │
 ├── nginx/
-│   ├── nginx.conf
-│   └── conf.d/
-│       ├── default.dev.conf
-│       └── default.prod.conf
+│   ├── dev.conf
+│   └── prod.conf
 │
 ├── wordpress/
-│   ├── themes/
-│   │   └── malacca-starter/  # Tema que registra CPTs
 │   └── plugins/
+│       └── mcclub-core/      # Plugin con CPTs y REST API
 │
-└── frontend/
-    ├── package.json
-    ├── vite.config.js
-    └── src/
-        ├── main.jsx
-        ├── App.jsx
-        ├── components/
-        ├── pages/
-        ├── services/
-        ├── hooks/
-        └── assets/
+└── frontend/                 # App Next.js 14
+    ├── app/                  # App Router
+    │   ├── layout.jsx
+    │   ├── page.jsx
+    │   ├── globals.css
+    │   ├── calendario/
+    │   ├── noticias/
+    │   └── quienes-somos/
+    ├── components/
+    │   ├── features/         # EventCard, NewsCard, Sliders...
+    │   ├── layout/           # Header, Footer
+    │   ├── three/            # Componentes Three.js
+    │   └── ui/               # Componentes UI reutilizables
+    ├── lib/
+    │   ├── wordpress.js      # Cliente API WordPress
+    │   ├── theme.js          # Configuracion MUI
+    │   └── ThemeRegistry.jsx
+    └── public/
+        ├── logo.png
+        └── models/           # Modelos 3D
 ```
 
 ## Funcionalidades
 
-| Sección | Ruta | Tipo WP | Descripción |
+| Seccion | Ruta | Tipo WP | Descripcion |
 |---------|------|---------|-------------|
-| Inicio | `/` | - | Landing |
-| Quiénes somos | `/quienes-somos` | Page | Info del club |
-| Noticias | `/noticias` | Post | Artículos |
+| Inicio | `/` | - | Landing con hero 3D, sliders |
+| Quienes somos | `/quienes-somos` | Page | Info del club |
+| Noticias | `/noticias` | Post | Articulos |
+| Noticia | `/noticias/:slug` | Post | Detalle noticia |
 | Calendario | `/calendario` | CPT: evento | Actividades |
-| Evento | `/evento/:slug` | CPT: evento | Detalle + inscripción |
 
 ### Custom Post Type: Evento
 
-| Campo | Tipo | Descripción |
+| Campo | Tipo | Descripcion |
 |-------|------|-------------|
 | `fecha_inicio` | datetime | Inicio del evento |
 | `fecha_fin` | datetime | Fin (opcional) |
-| `lugar` | text | Ubicación |
+| `lugar` | text | Ubicacion |
 | `limite_inscripciones` | number | Plazas (0 = ilimitado) |
 
 ## Requisitos
 
 - Docker >= 20.10
 - Docker Compose >= 2.0
-- Node.js >= 18 (desarrollo)
+- Node.js >= 18
 
-## Inicio Rápido
+## Inicio Rapido
 
 ### Desarrollo
 
 ```bash
 # Clonar y configurar
-git clone <url-del-repo>
+git clone git@github.com:FreeMEM/commodore-malacca-club.git
 cd cbm-malacca-club
 cp .env.example .env
 
-# Levantar infraestructura
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+# Levantar infraestructura WordPress
+docker compose up -d
 
-# Configurar WordPress: http://localhost/wp-admin/install.php
+# Configurar WordPress: http://localhost:8080/wp-admin/install.php
 
 # Frontend
 cd frontend
 npm install
 npm run dev
-# Acceder a http://localhost:5173
+# Acceder a http://localhost:3000
 ```
 
-### Producción
+### Produccion
 
 ```bash
-# Obtener certificado SSL
-docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm certbot certonly \
-  --webroot --webroot-path=/var/www/certbot \
-  -d cbmmalacca.freemem.space
+# Build del frontend
+cd frontend
+npm run build
 
-# Levantar servicios
+# Levantar con Docker
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
@@ -141,23 +145,28 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 | Entorno | Frontend | Admin | API |
 |---------|----------|-------|-----|
-| Dev | localhost:5173 | localhost/wp-admin | localhost/wp-json/wp/v2/ |
+| Dev | localhost:3000 | localhost:8080/wp-admin | localhost:8080/wp-json/wp/v2/ |
 | Prod | cbmmalacca.freemem.space | .../wp-admin | .../wp-json/wp/v2/ |
 
 ## Stack
 
 **Backend:** WordPress 6.x, PHP 8.2, MariaDB 10.x, Nginx, Certbot
-**Frontend:** React 18, Vite, React Router
+**Frontend:** Next.js 14, React 19, MUI (Material UI), Swiper, Three.js
 
-## Documentación
+## Caracteristicas del Frontend
 
-- [docs/arquitectura.md](docs/arquitectura.md) - Diseño del sistema
-- [docs/desarrollo.md](docs/desarrollo.md) - Guía de desarrollo
-- [docs/api.md](docs/api.md) - Referencia API
-- [docs/despliegue.md](docs/despliegue.md) - Guía de despliegue
+- **SSR/SSG**: Renderizado del lado del servidor con Next.js App Router
+- **Hero 3D**: Fondo wireframe animado con Three.js (modelo Commodore 64)
+- **Sliders**: Carruseles de noticias y eventos con Swiper
+- **Material UI**: Componentes con tema personalizado (colores del club)
+- **Responsive**: Diseno adaptativo para movil y escritorio
+
+## Documentacion
+
+- [docs/docker-compose.md](docs/docker-compose.md) - Configuracion Docker
+- [docs/frontend.md](docs/frontend.md) - Guia del frontend Next.js
+- [docs/wordpress-cpt.md](docs/wordpress-cpt.md) - Custom Post Types
 
 ## Licencia
 
-Este proyecto está licenciado bajo **GPL-2.0-or-later** (GNU General Public License v2 o posterior), la misma licencia que WordPress.
-
-Ver [LICENSE](LICENSE) para más detalles.
+Este proyecto esta licenciado bajo **GPL-2.0-or-later** (GNU General Public License v2 o posterior), la misma licencia que WordPress.
