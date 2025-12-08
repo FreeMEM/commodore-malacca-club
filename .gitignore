@@ -35,3 +35,4 @@ npm-debug.log*
 
 # WordPress uploads (en prod se gestiona aparte)
 wordpress/uploads/
+CLAUDE.md
