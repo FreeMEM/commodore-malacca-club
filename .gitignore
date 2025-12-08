@@ -1,0 +1,37 @@
+# Entorno
+.env
+.env.prod
+.env.local
+
+# Docker volumes (datos locales)
+db_data/
+wp_data/
+
+# Certificados SSL
+certbot/conf/
+certbot/www/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Build
+frontend/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# WordPress uploads (en prod se gestiona aparte)
+wordpress/uploads/

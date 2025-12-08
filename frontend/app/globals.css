@@ -1,0 +1,38 @@
+/* Estilos base para contenido de WordPress */
+/* La mayoria de estilos son manejados por MUI CssBaseline y theme */
+
+/* Fondo base con gradiente */
+html,
+body {
+  background: linear-gradient(180deg, #F8FAFC 0%, #EDF2F7 50%, #E2E8F0 100%);
+  min-height: 100vh;
+}
+
+/* Asegurar que las imagenes de WordPress se comporten bien */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Links sin decoracion por defecto */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color with brand color */
+::selection {
+  background-color: rgba(13, 91, 168, 0.2);
+}

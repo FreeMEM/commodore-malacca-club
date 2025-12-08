@@ -1,0 +1,21 @@
+# Desarrollo local - Se aplica automáticamente con `docker compose up`
+# NO incluir en producción
+
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - wp_data:/var/www/html:ro
+    networks:
+      - backend
+
+  # Exponer DB para debug con cliente SQL (opcional)
+  db:
+    ports:
+      - "3306:3306"

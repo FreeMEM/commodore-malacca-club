@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components/three/DynamicBackground.jsx -> ./WireframeBackground\":{\"id\":\"components/three/DynamicBackground.jsx -> ./WireframeBackground\",\"files\":[\"static/chunks/_app-pages-browser_components_three_WireframeBackground_jsx.js\"]}}"
