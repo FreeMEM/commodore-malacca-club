@@ -12,6 +12,18 @@ class MCClub_CPT_Eventos {
     public function __construct() {
         add_action('init', [$this, 'register_post_type']);
         add_action('init', [$this, 'register_taxonomy']);
+        // Desactivar Gutenberg para Eventos (meta boxes funcionan mejor con editor clasico)
+        add_filter('use_block_editor_for_post_type', [$this, 'disable_gutenberg'], 10, 2);
+    }
+
+    /**
+     * Desactivar Gutenberg para el CPT evento
+     */
+    public function disable_gutenberg($use_block_editor, $post_type) {
+        if ($post_type === 'evento') {
+            return false;
+        }
+        return $use_block_editor;
     }
 
     /**

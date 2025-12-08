@@ -4,6 +4,16 @@
  */
 
 const API_URL = process.env.WORDPRESS_API_URL || 'http://localhost:8080/wp-json'
+const WP_HOST = process.env.WORDPRESS_HOST || 'localhost:8080'
+
+/**
+ * Reemplazar localhost en URLs para acceso desde otros dispositivos
+ */
+export function fixImageUrl(url) {
+  if (!url) return null
+  // Reemplazar localhost:8080 por el host configurado
+  return url.replace(/localhost:8080/g, WP_HOST)
+}
 
 /**
  * Fetch generico con cache de Next.js
@@ -130,16 +140,35 @@ export async function crearInscripcion(eventoId, datos) {
 // ============ UTILIDADES ============
 
 /**
- * Obtener URL de imagen destacada
+ * Obtener URL de imagen destacada o primera imagen del contenido
  */
 export function getImageUrl(post, size = 'medium') {
-  const media = post?._embedded?.['wp:featuredmedia']?.[0]
-  if (!media) return null
+  let url = null
 
-  return (
-    media.media_details?.sizes?.[size]?.source_url ||
-    media.source_url
-  )
+  // Primero intentar obtener la imagen destacada
+  const media = post?._embedded?.['wp:featuredmedia']?.[0]
+  if (media) {
+    url = media.media_details?.sizes?.[size]?.source_url || media.source_url
+  }
+
+  // Fallback: extraer primera imagen del contenido
+  if (!url) {
+    const content = post?.content?.rendered || ''
+    const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/)
+    if (imgMatch && imgMatch[1]) {
+      url = imgMatch[1]
+    }
+  }
+
+  return fixImageUrl(url)
+}
+
+/**
+ * Arreglar URLs de imagenes en contenido HTML
+ */
+export function fixContentUrls(html) {
+  if (!html) return ''
+  return html.replace(/localhost:8080/g, WP_HOST)
 }
 
 /**
@@ -161,4 +190,16 @@ export function formatDate(dateString) {
     month: 'long',
     year: 'numeric',
   })
+}
+
+/**
+ * Eliminar primera imagen del contenido (para evitar duplicados con imagen destacada)
+ */
+export function removeFirstImage(html) {
+  if (!html) return ''
+  // Eliminar la primera etiqueta img y su contenedor figure si existe
+  return html
+    .replace(/<figure[^>]*>[\s\S]*?<img[^>]*>[\s\S]*?<\/figure>/, '')
+    .replace(/^[\s]*<img[^>]*>/, '')
+    .trim()
 }

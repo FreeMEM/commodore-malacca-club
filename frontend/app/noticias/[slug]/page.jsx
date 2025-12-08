@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate } from '@/lib/wordpress'
+import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate, removeFirstImage, fixContentUrls } from '@/lib/wordpress'
 
 export const revalidate = 60
 
@@ -40,10 +40,16 @@ export default async function NoticiaDetallePage({ params }) {
   }
 
   const imageUrl = getImageUrl(noticia, 'large')
+  // Si hay imagen de cabecera, eliminar la primera imagen del contenido para evitar duplicados
+  // También arreglar URLs de localhost para acceso desde otros dispositivos
+  const rawContent = imageUrl
+    ? removeFirstImage(noticia.content.rendered)
+    : noticia.content.rendered
+  const content = fixContentUrls(rawContent)
 
   return (
     <Box sx={{ py: { xs: 4, md: 6 } }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="md">
         <Button
           component={Link}
           href="/noticias"
@@ -68,7 +74,7 @@ export default async function NoticiaDetallePage({ params }) {
             />
           )}
 
-          <Box sx={{ p: { xs: 3, md: 5 }, maxWidth: 800, mx: 'auto' }}>
+          <Box sx={{ p: { xs: 3, md: 4 } }}>
             {/* Date */}
             <Chip
               icon={<CalendarTodayIcon sx={{ fontSize: '1rem !important' }} />}
@@ -111,7 +117,7 @@ export default async function NoticiaDetallePage({ params }) {
                   fontStyle: 'italic',
                 },
               }}
-              dangerouslySetInnerHTML={{ __html: noticia.content.rendered }}
+              dangerouslySetInnerHTML={{ __html: content }}
             />
           </Box>
         </Paper>

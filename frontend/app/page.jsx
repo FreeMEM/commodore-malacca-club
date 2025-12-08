@@ -22,45 +22,12 @@ export default async function HomePage() {
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Proximos Eventos Section */}
-      <Box
-        component="section"
-        sx={{
-          py: { xs: 6, md: 10 },
-          bgcolor: 'background.default',
-        }}
-      >
-        <Container maxWidth="lg">
-          <SectionTitle
-            title="Proximos Eventos"
-            subtitle="Participa en nuestras actividades y conoce a otros entusiastas del Commodore"
-          />
-
-          <EventSlider eventos={eventos} />
-
-          {eventos.length > 0 && (
-            <Box sx={{ textAlign: 'center', mt: 4 }}>
-              <Button
-                component={Link}
-                href="/calendario"
-                variant="outlined"
-                color="primary"
-                size="large"
-                endIcon={<ArrowForwardIcon />}
-              >
-                Ver todos los eventos
-              </Button>
-            </Box>
-          )}
-        </Container>
-      </Box>
-
       {/* Ultimas Noticias Section */}
       <Box
         component="section"
         sx={{
           py: { xs: 6, md: 10 },
-          bgcolor: 'white',
+          bgcolor: 'background.default',
         }}
       >
         <Container maxWidth="lg">
@@ -82,6 +49,39 @@ export default async function HomePage() {
                 endIcon={<ArrowForwardIcon />}
               >
                 Ver todas las noticias
+              </Button>
+            </Box>
+          )}
+        </Container>
+      </Box>
+
+      {/* Proximos Eventos Section */}
+      <Box
+        component="section"
+        sx={{
+          py: { xs: 6, md: 10 },
+          bgcolor: 'white',
+        }}
+      >
+        <Container maxWidth="lg">
+          <SectionTitle
+            title="Proximos Eventos"
+            subtitle="Participa en nuestras actividades y conoce a otros entusiastas del Commodore"
+          />
+
+          <EventSlider eventos={eventos} />
+
+          {eventos.length > 0 && (
+            <Box sx={{ textAlign: 'center', mt: 4 }}>
+              <Button
+                component={Link}
+                href="/calendario"
+                variant="outlined"
+                color="primary"
+                size="large"
+                endIcon={<ArrowForwardIcon />}
+              >
+                Ver todos los eventos
               </Button>
             </Box>
           )}

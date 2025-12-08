@@ -48,10 +48,11 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
               <Image
-                src="/logo.png"
+                src="/logo-transparent.png"
                 alt="Commodore Malacca Club"
-                width={56}
-                height={56}
+                width={48}
+                height={48}
+                style={{ objectFit: 'contain', width: 'auto', height: 48 }}
                 priority
               />
               <Box sx={{ ml: 1.5, display: { xs: 'none', sm: 'block' } }}>
