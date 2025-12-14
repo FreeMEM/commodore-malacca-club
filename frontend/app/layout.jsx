@@ -3,6 +3,7 @@ import ThemeRegistry from '@/lib/ThemeRegistry'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/features/CookieBanner'
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import Box from '@mui/material/Box'
 import './globals.css'
 
@@ -23,6 +24,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={raleway.variable}>
+      <GoogleAnalytics />
       <body className={raleway.className}>
         <ThemeRegistry>
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

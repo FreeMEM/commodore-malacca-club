@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
       args:
         WORDPRESS_API_URL: ${WORDPRESS_API_URL:-https://commodoremalacca.club/wp-json}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
     restart: unless-stopped
     depends_on:
       - wordpress

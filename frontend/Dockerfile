@@ -16,7 +16,9 @@ COPY . .
 
 # Variables de entorno para build
 ARG WORDPRESS_API_URL
+ARG NEXT_PUBLIC_GA_ID
 ENV WORDPRESS_API_URL=${WORDPRESS_API_URL}
+ENV NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
 
 # Build de Next.js
 RUN npm run build
