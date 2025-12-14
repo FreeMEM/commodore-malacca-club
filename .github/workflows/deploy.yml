@@ -1,0 +1,22 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull latest changes
+        run: |
+          cd /root/commodore-malacca-club
+          git pull origin main
+
+      - name: Build and deploy
+        run: |
+          cd /root/commodore-malacca-club
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml build frontend
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d frontend nginx
