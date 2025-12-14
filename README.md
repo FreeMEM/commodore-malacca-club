@@ -2,7 +2,7 @@
 
 Sistema web para el club Malacca usando WordPress como CMS headless y Next.js como frontend.
 
-**Dominio:** `cbmmalacca.freemem.space` (provisional)
+**Dominio:** `commodoremalacca.club`
 
 ## Arquitectura
 
@@ -141,12 +141,60 @@ npm run build
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
+### Comandos de Administracion
+
+```bash
+# === ESTADO ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+
+# === LOGS ===
+# Todos los servicios
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+
+# Servicio especifico
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f nginx
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f wordpress
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f frontend
+
+# Ultimas N lineas
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 nginx
+
+# === REINICIAR ===
+# Todo el sistema
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart
+
+# Servicio especifico
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+
+# === PARAR / INICIAR ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml stop
+docker compose -f docker-compose.yml -f docker-compose.prod.yml start
+
+# === RECREAR (aplica cambios de config) ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-recreate nginx
+
+# === REBUILD (cambios en Dockerfile) ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build frontend
+
+# === MODSECURITY LOGS ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec nginx cat /var/log/modsecurity/audit.log
+
+# === ENTRAR EN CONTENEDOR ===
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec wordpress bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec nginx sh
+
+# === SYSTEMD (arranque automatico) ===
+systemctl status commodore-malacca
+systemctl restart commodore-malacca
+systemctl stop commodore-malacca
+```
+
 ## URLs
 
 | Entorno | Frontend | Admin | API |
 |---------|----------|-------|-----|
 | Dev | localhost:3000 | localhost:8080/wp-admin | localhost:8080/wp-json/wp/v2/ |
-| Prod | cbmmalacca.freemem.space | .../wp-admin | .../wp-json/wp/v2/ |
+| Prod | commodoremalacca.club | .../wp-admin | .../wp-json/wp/v2/ |
 
 ## Stack
 

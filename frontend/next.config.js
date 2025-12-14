@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Output standalone para Docker
+  output: 'standalone',
+
   // Permitir imagenes de WordPress
   images: {
     remotePatterns: [
@@ -11,7 +14,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cbmmalacca.freemem.space',
+        hostname: 'commodoremalacca.club',
         pathname: '/wp-content/uploads/**',
       },
     ],

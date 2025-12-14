@@ -1,0 +1,20 @@
+# Temporal - Solo para obtener certificado SSL inicial
+# Usar: docker compose -f docker-compose.init-ssl.yml up -d
+# Luego: docker compose -f docker-compose.init-ssl.yml run --rm certbot certonly ...
+# Finalmente: docker compose -f docker-compose.init-ssl.yml down
+
+services:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/init-ssl.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/www:/var/www/certbot:ro
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt

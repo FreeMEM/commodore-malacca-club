@@ -17,6 +17,7 @@ frontend/node_modules/
 
 # Build
 frontend/dist/
+frontend/.next/
 
 # IDE
 .idea/
