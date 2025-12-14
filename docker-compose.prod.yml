@@ -14,6 +14,9 @@ services:
       - wordpress
     environment:
       - WORDPRESS_API_URL=${WORDPRESS_API_URL:-https://commodoremalacca.club/wp-json}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    extra_hosts:
+      - "commodoremalacca.club:host-gateway"
     networks:
       - backend
 
