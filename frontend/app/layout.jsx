@@ -2,6 +2,7 @@ import { Raleway } from 'next/font/google'
 import ThemeRegistry from '@/lib/ThemeRegistry'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import CookieBanner from '@/components/features/CookieBanner'
 import Box from '@mui/material/Box'
 import './globals.css'
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
             </Box>
             <Footer />
           </Box>
+          <CookieBanner />
         </ThemeRegistry>
       </body>
     </html>
