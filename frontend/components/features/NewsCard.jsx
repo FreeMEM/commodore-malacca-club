@@ -5,11 +5,12 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import { getImageUrl, stripHtml, formatDate } from '@/lib/wordpress'
+import { getImageUrl, stripHtml, formatDate, decodeHtmlEntities } from '@/lib/wordpress'
 
 export default function NewsCard({ noticia }) {
   const imageUrl = getImageUrl(noticia, 'medium_large')
   const excerpt = stripHtml(noticia.excerpt?.rendered || '')
+  const title = decodeHtmlEntities(noticia.title.rendered)
 
   return (
     <Card
@@ -37,7 +38,7 @@ export default function NewsCard({ noticia }) {
           <Box
             component="img"
             src={imageUrl}
-            alt={noticia.title.rendered}
+            alt={title}
             sx={{
               width: '100%',
               height: '100%',
@@ -130,7 +131,7 @@ export default function NewsCard({ noticia }) {
             },
           }}
         >
-          {noticia.title.rendered}
+          {title}
         </Typography>
 
         <Typography

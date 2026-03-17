@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate, removeFirstImage, fixContentUrls, sanitizeHtml } from '@/lib/wordpress'
+import { getNoticiaBySlug, getAllNoticiasSlugs, getImageUrl, formatDate, removeFirstImage, fixContentUrls, sanitizeHtml, decodeHtmlEntities } from '@/lib/wordpress'
 
 export const revalidate = 60
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: noticia.title.rendered,
+    title: decodeHtmlEntities(noticia.title.rendered),
     description: noticia.excerpt?.rendered?.replace(/<[^>]*>/g, '').substring(0, 160),
   }
 }
@@ -40,6 +40,7 @@ export default async function NoticiaDetallePage({ params }) {
   }
 
   const imageUrl = getImageUrl(noticia, 'large')
+  const title = decodeHtmlEntities(noticia.title.rendered)
   // Si hay imagen de cabecera, eliminar la primera imagen del contenido para evitar duplicados
   // También arreglar URLs de localhost para acceso desde otros dispositivos
   const rawContent = imageUrl
@@ -65,7 +66,7 @@ export default async function NoticiaDetallePage({ params }) {
             <Box
               component="img"
               src={imageUrl}
-              alt={noticia.title.rendered}
+              alt={title}
               sx={{
                 width: '100%',
                 maxHeight: 500,
@@ -94,7 +95,7 @@ export default async function NoticiaDetallePage({ params }) {
                 lineHeight: 1.3,
               }}
             >
-              {noticia.title.rendered}
+              {title}
             </Typography>
 
             {/* Content */}
