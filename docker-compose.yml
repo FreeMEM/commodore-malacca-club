@@ -31,6 +31,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - ./wordpress/plugins/mcclub-core:/var/www/html/wp-content/plugins/mcclub-core
+      - ./wordpress/uploads.ini:/usr/local/etc/php/conf.d/zzz-uploads.ini:ro
     networks:
       - backend
 

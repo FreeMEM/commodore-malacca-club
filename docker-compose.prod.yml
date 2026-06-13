@@ -41,6 +41,11 @@ services:
       # Ajustes para WordPress
       - ALLOWED_METHODS=GET HEAD POST OPTIONS PUT DELETE
       - MAX_FILE_SIZE=67108864
+      # Permite subir archivos grandes (videos) por wp-admin y REST API.
+      # Por defecto el limite es 12,5MB con Reject -> 403 en archivos mayores.
+      # ProcessPartial inspecciona el inicio del cuerpo pero no rechaza subidas grandes.
+      - MODSEC_REQ_BODY_LIMIT=67108864
+      - MODSEC_REQ_BODY_LIMIT_ACTION=ProcessPartial
       - MAX_NUM_ARGS=512
       - ARG_LENGTH=8000
       - TOTAL_ARG_LENGTH=64000
