@@ -34,6 +34,10 @@ services:
       - MODSEC_RULE_ENGINE=On
       - MODSEC_AUDIT_LOG=/var/log/modsecurity/audit.log
       - BLOCKING_PARANOIA=1
+      # Desactiva la inspeccion del cuerpo de respuesta: el buffering de
+      # libmodsecurity rompe el framing HTTP/2 (ERR_HTTP2_PROTOCOL_ERROR)
+      # en respuestas generadas por PHP como /wp-admin/. Mantiene el WAF de entrada.
+      - MODSEC_RESP_BODY_ACCESS=Off
       # Ajustes para WordPress
       - ALLOWED_METHODS=GET HEAD POST OPTIONS PUT DELETE
       - MAX_FILE_SIZE=67108864
