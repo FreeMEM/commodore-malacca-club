@@ -14,8 +14,8 @@ const WP_HOST = process.env.WORDPRESS_HOST || 'localhost:8080'
 export function sanitizeHtml(html) {
   if (!html) return ''
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'figure', 'figcaption', 'span', 'div'],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height'],
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'img', 'figure', 'figcaption', 'span', 'div', 'video', 'source', 'audio'],
+    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height', 'controls', 'poster', 'preload', 'type', 'muted', 'loop', 'playsinline', 'autoplay'],
     ALLOW_DATA_ATTR: false,
   })
 }
@@ -226,9 +226,12 @@ export function formatDate(dateString) {
  */
 export function removeFirstImage(html) {
   if (!html) return ''
-  // Eliminar la primera etiqueta img y su contenedor figure si existe
+  // Eliminar la primera etiqueta img y su contenedor figure si existe.
+  // El (?:(?!<\/figure>)[\s\S])*? evita cruzar el cierre de un <figure>: asi
+  // solo casa un figure que realmente contiene un <img> y no engulle un bloque
+  // de video (wp-block-video, sin img) que pudiera ir antes de la galeria.
   return html
-    .replace(/<figure[^>]*>[\s\S]*?<img[^>]*>[\s\S]*?<\/figure>/, '')
+    .replace(/<figure[^>]*>(?:(?!<\/figure>)[\s\S])*?<img[^>]*>[\s\S]*?<\/figure>/, '')
     .replace(/^[\s]*<img[^>]*>/, '')
     .trim()
 }
