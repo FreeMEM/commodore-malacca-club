@@ -18,6 +18,16 @@ svg {
   max-width: 100%;
 }
 
+/* Mantener la proporcion: sin height:auto el alto no escala al reducir el
+   ancho y las imagenes del contenido salen estiradas. Se excluye svg, que
+   tiene su propia regla con height:100%. */
+img,
+picture,
+video,
+canvas {
+  height: auto;
+}
+
 /* Links sin decoracion por defecto */
 a {
   text-decoration: none;
