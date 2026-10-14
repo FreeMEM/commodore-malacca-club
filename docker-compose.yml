@@ -18,7 +18,7 @@ services:
       retries: 5
 
   wordpress:
-    image: wordpress:6.4-php8.2-fpm
+    image: wordpress:php8.3-fpm  # sin versión de WordPress: el núcleo vive en el volumen y lo actualiza WP-CLI; la etiqueta solo fija PHP
     restart: unless-stopped
     depends_on:
       db:
