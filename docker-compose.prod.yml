@@ -21,7 +21,15 @@ services:
       - backend
 
   nginx:
-    image: owasp/modsecurity-crs:nginx-alpine
+    # Versión LTS fija del CRS 4; actualizar con `docker compose pull nginx`.
+    image: owasp/modsecurity-crs:4.25-nginx-alpine-lts
+    # Registro de auditoría a la salida del contenedor (la ruta del volumen no
+    # la podía crear el usuario de nginx y no se escribía nada), con rotación.
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
     restart: unless-stopped
     depends_on:
       - wordpress
@@ -29,10 +37,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      # Solo para el balanceador, con PROXY protocol (ver nginx/site.conf)
+      - "9443:9443"
     environment:
       # ModSecurity
       - MODSEC_RULE_ENGINE=On
-      - MODSEC_AUDIT_LOG=/var/log/modsecurity/audit.log
+      - MODSEC_AUDIT_LOG=/dev/stdout
       - BLOCKING_PARANOIA=1
       # Desactiva la inspeccion del cuerpo de respuesta: el buffering de
       # libmodsecurity rompe el framing HTTP/2 (ERR_HTTP2_PROTOCOL_ERROR)
@@ -53,6 +63,9 @@ services:
       - ./nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - ./nginx/modsecurity/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:ro
       - ./nginx/modsecurity/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:ro
+      # Plugin oficial del CRS con las excepciones de WordPress (v1.2.0)
+      - ./nginx/modsecurity/plugins/wordpress-rule-exclusions-config.conf:/etc/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-config.conf:ro
+      - ./nginx/modsecurity/plugins/wordpress-rule-exclusions-before.conf:/etc/modsecurity.d/owasp-crs/plugins/wordpress-rule-exclusions-before.conf:ro
       - ./certbot/www:/var/www/certbot:ro
       - ./certbot/conf:/etc/letsencrypt:ro
       - wp_data:/var/www/html:ro
