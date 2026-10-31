@@ -198,14 +198,28 @@ export function stripHtml(html) {
  */
 export function decodeHtmlEntities(text) {
   if (!text) return ''
-  return text
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
+  // Una sola pasada: así "&amp;lt;" queda en "&lt;" y no en "<"
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entidad, codigo) => {
+    if (codigo[0] === '#') {
+      const n = codigo[1].toLowerCase() === 'x' ? parseInt(codigo.slice(2), 16) : parseInt(codigo.slice(1), 10)
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : entidad
+    }
+    return ENTIDADES[codigo.toLowerCase()] ?? entidad
+  })
+}
+
+const ENTIDADES = {
+  nbsp: ' ',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  hellip: '…',
+  ndash: '–',
+  mdash: '—',
+  laquo: '«',
+  raquo: '»',
 }
 
 /**

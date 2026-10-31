@@ -1,7 +1,7 @@
 'use client'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination } from 'swiper/modules'
+import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -70,8 +70,20 @@ export default function NewsSlider({ noticias }) {
       </IconButton>
 
       <Swiper
-        modules={[Navigation, Pagination]}
+        modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={24}
+        loop={noticias.length > 3}
+        autoplay={{
+          delay: 6000,
+          pauseOnMouseEnter: true,
+          disableOnInteraction: false,
+        }}
+        onSwiper={(swiper) => {
+          // Quien pide menos movimiento en su sistema mueve el carrusel a mano
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            swiper.autoplay.stop()
+          }
+        }}
         slidesPerView={1}
         navigation={{
           prevEl: '.news-swiper-prev',
@@ -91,7 +103,7 @@ export default function NewsSlider({ noticias }) {
         }}
         style={{ paddingBottom: 50 }}
       >
-        {noticias.slice(0, 6).map((noticia) => (
+        {noticias.map((noticia) => (
           <SwiperSlide key={noticia.id}>
             <Box sx={{ height: '100%', pb: 1 }}>
               <NewsCard noticia={noticia} />
