@@ -20,3 +20,6 @@ jobs:
           cd /root/commodore-malacca-club
           docker compose -f docker-compose.yml -f docker-compose.prod.yml build frontend
           docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d wordpress frontend nginx
+          # site.conf va montado como fichero suelto: git pull lo cambia de inodo y
+          # nginx sigue con el viejo hasta reiniciarse
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
