@@ -13,7 +13,7 @@ export const revalidate = 60
 
 export default async function HomePage() {
   const [noticias, eventos] = await Promise.all([
-    getNoticias(6),
+    getNoticias(9),
     getProximosEventos(6),
   ])
 
