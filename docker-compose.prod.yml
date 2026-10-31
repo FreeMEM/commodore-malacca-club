@@ -6,6 +6,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      # Sin esto la compilación no llega a WordPress (cosmos no hace NAT loopback)
+      # y las páginas salen vacías: el primer visitante tras desplegar veía
+      # "No hay noticias publicadas".
+      extra_hosts:
+        - "commodoremalacca.club:host-gateway"
       args:
         WORDPRESS_API_URL: ${WORDPRESS_API_URL:-https://commodoremalacca.club/wp-json}
         NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
