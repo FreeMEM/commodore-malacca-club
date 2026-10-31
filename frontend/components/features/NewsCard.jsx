@@ -9,7 +9,7 @@ import { getImageUrl, stripHtml, formatDate, decodeHtmlEntities } from '@/lib/wo
 
 export default function NewsCard({ noticia }) {
   const imageUrl = getImageUrl(noticia, 'medium_large')
-  const excerpt = stripHtml(noticia.excerpt?.rendered || '')
+  const excerpt = decodeHtmlEntities(stripHtml(noticia.excerpt?.rendered || ''))
   const title = decodeHtmlEntities(noticia.title.rendered)
 
   return (
