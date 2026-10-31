@@ -113,3 +113,14 @@ function mcclub_ocultar_usuarios($endpoints) {
     return $endpoints;
 }
 add_filter('rest_endpoints', 'mcclub_ocultar_usuarios');
+
+/**
+ * Salud del sitio: las actualizaciones automaticas estan apagadas a proposito
+ * (DISALLOW_FILE_MODS en docker-compose.yml); las hace cada dia el mantenimiento
+ * del CT 105 con WP-CLI.
+ */
+function mcclub_sin_prueba_actualizaciones($pruebas) {
+    unset($pruebas['async']['background_updates']);
+    return $pruebas;
+}
+add_filter('site_status_tests', 'mcclub_sin_prueba_actualizaciones');
