@@ -18,7 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-  const noticia = await getNoticiaBySlug(params.slug)
+  const { slug } = await params
+  const noticia = await getNoticiaBySlug(slug)
 
   if (!noticia) {
     return {
@@ -33,7 +34,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function NoticiaDetallePage({ params }) {
-  const noticia = await getNoticiaBySlug(params.slug)
+  const { slug } = await params
+  const noticia = await getNoticiaBySlug(slug)
 
   if (!noticia) {
     notFound()

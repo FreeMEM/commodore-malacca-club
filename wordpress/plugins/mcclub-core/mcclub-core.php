@@ -99,3 +99,17 @@ function mcclub_rest_cors($response) {
     return $response;
 }
 add_filter('rest_post_dispatch', 'mcclub_rest_cors', 10, 1);
+
+/**
+ * Sin listado de usuarios para quien no ha iniciado sesion: /wp-json/wp/v2/users
+ * daba a cualquiera los nombres de cuenta de los administradores (31/10/2026).
+ * El frontend no los usa: de cada noticia solo pinta la imagen destacada.
+ */
+function mcclub_ocultar_usuarios($endpoints) {
+    if (is_user_logged_in()) {
+        return $endpoints;
+    }
+    unset($endpoints['/wp/v2/users'], $endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+    return $endpoints;
+}
+add_filter('rest_endpoints', 'mcclub_ocultar_usuarios');
