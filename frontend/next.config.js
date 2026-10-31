@@ -3,6 +3,9 @@ const nextConfig = {
   // Output standalone para Docker
   output: 'standalone',
 
+  // Sin la cabecera "x-powered-by: Next.js": no hace falta decir con qué está hecha
+  poweredByHeader: false,
+
   // Permitir imagenes de WordPress
   images: {
     remotePatterns: [

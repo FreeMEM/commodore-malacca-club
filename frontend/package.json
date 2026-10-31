@@ -12,18 +12,21 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.6",
-    "@mui/material": "^7.3.6",
-    "@mui/material-nextjs": "^7.3.6",
-    "isomorphic-dompurify": "^2.33.0",
-    "next": "^14.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "swiper": "^12.0.3",
+    "@mui/icons-material": "^7.3.11",
+    "@mui/material": "^7.3.11",
+    "@mui/material-nextjs": "^7.3.10",
+    "isomorphic-dompurify": "^2.36.0",
+    "next": "^15.5.28",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "swiper": "^12.2.0",
     "three": "^0.181.2"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
-    "eslint-config-next": "^14.0.4"
+    "eslint-config-next": "^15.5.28"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
   }
 }
